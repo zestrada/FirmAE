@@ -9,6 +9,7 @@ import signal
 import scripts.util as util
 import multiprocessing as mp
 import logging, coloredlogs
+import shlex
 coloredlogs.install(level=logging.DEBUG)
 coloredlogs.install(level=logging.INFO)
 #rootLogger = logging.getLogger()
@@ -44,16 +45,16 @@ class docker_helper:
     def run_core(self, idx, mode, brand, firmware_path):
         firmware_root = os.path.dirname(firmware_path)
         firmware = os.path.basename(firmware_path)
-        docker_name = 'docker{}_{}'.format(idx, firmware)
+        docker_name = 'docker{}_{}'.format(idx, firmware).replace('(', '-').replace(')', '-')
         cmd = """docker run -dit --rm \\
                 -v /dev:/dev \\
                 -v {0}:/work/FirmAE \\
                 -v {1}:/work/firmwares \\
                 --privileged=true \\
                 --name {2} \\
-                fcore""".format(self.firmae_root,
+                fcore""".format(shlex.quote(self.firmae_root),
                                 firmware_root,
-                                docker_name)
+                                shlex.quote(docker_name))
 
         sp.check_output(cmd, shell=True)
         logging.info("[*] {} emulation start!".format(docker_name))
@@ -64,11 +65,11 @@ class docker_helper:
         cmd += "bash -c \"cd /work/FirmAE && "
         cmd += "./run.sh {0} {1} /work/firmwares/{2} ".format(mode,
                                                               brand,
-                                                              firmware)
+                                                              shlex.quote(firmware))
         if mode == "-d":
             cmd += "\""
         else:
-            cmd += "2>&1 > /work/FirmAE/scratch/{0}.log\" &".format(firmware)
+            cmd += "2>&1 > /work/FirmAE/scratch/{0}.log\" &".format(shlex.quote(firmware))
 
         t0 = time.time()
         iid = -1
