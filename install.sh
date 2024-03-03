@@ -17,7 +17,7 @@ sudo -u postgres bash -c "psql -c \"CREATE USER firmadyne WITH PASSWORD 'firmady
 sudo -u postgres createdb -O firmadyne firmware
 sudo -u postgres psql -d firmware < ./database/schema
 echo "listen_addresses = '172.17.0.1,127.0.0.1,localhost'" | sudo -u postgres tee --append /etc/postgresql/*/main/postgresql.conf
-echo "host all all 172.17.0.1/24 trust" | sudo -u postgres tee --append /etc/postgresql/*/main/pg_hba.conf
+echo "host all all 172.17.0.1/16 trust" | sudo -u postgres tee --append /etc/postgresql/*/main/pg_hba.conf
 
 sudo apt install -y libpq-dev
 python3 -m pip install psycopg2 psycopg2-binary
