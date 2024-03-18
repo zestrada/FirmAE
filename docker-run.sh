@@ -18,11 +18,13 @@ if [ -d "${IN_PATH}" ]; then
 fi
 
 
-
+SCRATCH_DIR=$(realpath scratch)/${IN_DIR}/${IN_FILE}
+mkdir -p $SCRATCH_DIR
 docker run --rm -it -v /dev:/dev \
     -v ${IN_DIR}:/work/firmwares \
     --privileged \
-    fcore \
+    -v ${SCRATCH_DIR}:/work/FirmAE/scratch \
+    firmae_isolated \
         bash -c "\
             cd /work/FirmAE && \
             sudo service postgresql start && \
