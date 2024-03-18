@@ -20,7 +20,7 @@ fi
 
 SCRATCH_DIR=$(realpath scratch)/${IN_DIR}/${IN_FILE}
 mkdir -p $SCRATCH_DIR
-docker run --rm -it -v /dev:/dev \
+docker run --rm -v /dev:/dev \
     -v ${IN_DIR}:/work/firmwares \
     --privileged \
     -v ${SCRATCH_DIR}:/work/FirmAE/scratch \
