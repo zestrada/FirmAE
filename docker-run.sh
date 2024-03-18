@@ -17,10 +17,13 @@ if [ -d "${IN_PATH}" ]; then
     IN_FILE=""
 fi
 
+#for losetup race conditions
+LOCK_DIR=/tmp/lock
 
 SCRATCH_DIR=$(realpath scratch)/${IN_DIR}/${IN_FILE}
 mkdir -p $SCRATCH_DIR
 docker run --rm -v /dev:/dev \
+    -v ${LOCK_DIR}:/var/lock \
     -v ${IN_DIR}:/work/firmwares \
     --privileged \
     -v ${SCRATCH_DIR}:/work/FirmAE/scratch \
