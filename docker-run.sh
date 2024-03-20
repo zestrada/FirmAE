@@ -32,5 +32,11 @@ docker run --rm -v /dev:/dev \
             cd /work/FirmAE && \
             sudo service postgresql start && \
             sleep 10 && \
-            ./run.sh -c brand /work/firmwares/${IN_FILE} \
+            ./run.sh -c brand /work/firmwares/${IN_FILE}; \
+	    \$(losetup -j /work/FirmAE/scratch/1/image.raw) && losetup -d \$(losetup -j /work/FirmAE/scratch/1/image.raw | cut -d: -f1) \
             "
+
+#Total cleanup hack
+for d in `losetup -a|grep deleted | cut -d: -f1`; do
+    sudo losetup -d $d
+done
